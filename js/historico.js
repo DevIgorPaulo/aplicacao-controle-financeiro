@@ -242,5 +242,3 @@ const Historico = {
 };
 
 window.Historico = Historico;
-window.Historico.editExpenseTrigger = (id) => Historico.editExpenseTrigger(id);
-window.Historico.deleteExpenseTrigger = (id, description) => Historico.deleteExpenseTrigger(id, description);

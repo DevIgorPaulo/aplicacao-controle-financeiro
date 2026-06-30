@@ -422,8 +422,8 @@ body {
     position: fixed;
     top: 0;
     left: 0;
-    width: 100vw;
-    height: 100vh;
+    right: 0;
+    bottom: 0;
     background: rgba(15, 23, 42, 0.6);
     backdrop-filter: blur(4px);
     display: flex;
@@ -693,7 +693,7 @@ body {
 /* Category Indicators Grid (Historico) */
 .category-badges-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
     gap: 1rem;
 }
 
@@ -787,26 +787,35 @@ body {
 
     .sidebar {
         width: 100%;
-        height: auto;
-        position: relative;
-        padding: 1.25rem 1rem;
+        height: 60px;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        padding: 0 1.25rem;
         flex-direction: row;
         align-items: center;
         justify-content: space-between;
+        z-index: 1000;
+        border-bottom: 1px solid var(--color-border);
     }
 
     .sidebar-logo {
         margin-bottom: 0;
+        font-size: 1.1rem;
     }
 
     .sidebar-menu {
-        display: none;
-        /* Can be handled as a drawer or dropdown if needed, for simplicity we keep it clean or make a horizontal menu */
+        display: flex;
+        flex-direction: row;
+        gap: 0.5rem;
+        flex-grow: 0;
     }
 
-    .sidebar-horizontal-menu {
-        display: flex;
-        gap: 0.5rem;
+    .menu-item a {
+        padding: 0.4rem 0.65rem;
+        font-size: 0.8rem;
+        gap: 0.35rem;
     }
 
     .sidebar-footer {
@@ -815,10 +824,35 @@ body {
 
     .main-content {
         margin-left: 0;
-        padding: 1.25rem;
+        margin-top: 60px;
+        padding: 1rem;
+        width: 100%;
+        overflow-x: hidden;
     }
 
-    .landing-hero h1 {
-        font-size: 2.25rem;
+    .top-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+
+    .header-actions {
+        width: 100%;
+        justify-content: flex-start;
+        gap: 0.5rem;
+    }
+
+    .header-actions .btn {
+        flex-grow: 1;
+        justify-content: center;
+    }
+
+    .filter-bar {
+        padding: 1rem;
+        gap: 0.75rem;
+    }
+
+    .filter-bar > * {
+        width: 100% !important;
     }
 }

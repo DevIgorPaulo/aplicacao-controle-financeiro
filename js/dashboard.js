@@ -33,7 +33,6 @@ const Dashboard = {
         this.modalBalanceClose = document.getElementById('modal-balance-close');
         this.btnCancelBalance = document.getElementById('btn-cancel-balance');
         this.formBalance = document.getElementById('form-balance');
-        r
         this.chartTypeSelector = document.getElementById('chart-type-selector');
     },
 
