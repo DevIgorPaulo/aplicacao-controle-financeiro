@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Histórico de Gastos - UniWallet</title>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+    <div class="app-container">
+        <aside class="sidebar">
+            <div class="sidebar-logo">
+                <i class="fas fa-wallet" style="color: var(--color-blue);"></i>
+                <span>UniWallet</span>
+            </div>
+            <ul class="sidebar-menu">
+                <li class="menu-item">
+                    <a href="index.html">
+                        <i class="fas fa-th-large"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li class="menu-item active">
+                    <a href="historico.html">
+                        <i class="fas fa-history"></i>
+                        <span>Histórico</span>
+                    </a>
+                </li>
+            </ul>
+        </aside>
+
+        <main class="main-content">
+            <header class="top-header">
+                <div class="page-title">
+                    <h1>Histórico de Gastos</h1>
+                    <p>Gerencie, filtre, edite ou exclua seus lançamentos</p>
+                </div>
+                <div class="header-actions">
+                    <button class="btn btn-primary" id="btn-add-expense-trigger">
+                        <i class="fas fa-plus"></i> Novo Gasto
+                    </button>
+                </div>
+            </header>
+
+            <section class="content-block" style="padding: 1.25rem;">
+                <h3 style="font-size: 1rem; font-weight: 700; margin-bottom: 0.75rem;">Total gasto por categoria no
+                    período filtrado</h3>
+                <div class="category-badges-grid" id="category-totals-summary">
+                </div>
+            </section>
+
+            <section class="filter-bar">
+                <div class="search-input-wrapper">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="filter-search" class="form-control" placeholder="Buscar por descrição...">
+                </div>
+
+                <div style="min-width: 150px;">
+                    <select id="filter-category" class="form-control">
+                        <option value="">Todas as Categorias</option>
+                        <option value="Alimentação">Alimentação</option>
+                        <option value="Transporte">Transporte</option>
+                        <option value="Moradia">Moradia</option>
+                        <option value="Saúde">Saúde</option>
+                        <option value="Lazer">Lazer</option>
+                        <option value="Educação">Educação</option>
+                        <option value="Outros">Outros</option>
+                    </select>
+                </div>
+
+                <div style="min-width: 150px;">
+                    <input type="month" id="filter-month" class="form-control">
+                </div>
+
+                <button class="btn btn-secondary" id="btn-clear-filters" title="Limpar Filtros">
+                    <i class="fas fa-eraser"></i> Limpar
+                </button>
+            </section>
+
+            <section class="table-responsive">
+                <table class="custom-table">
+                    <thead>
+                        <tr>
+                            <th>Data</th>
+                            <th>Descrição</th>
+                            <th>Categoria</th>
+                            <th>Valor</th>
+                            <th style="width: 100px; text-align: center;">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="expenses-table-body">
+                        <!-- Linhas renderizadas dinamicamente pelo JS -->
+                    </tbody>
+                </table>
+            </section>
+        </main>
+    </div>
+
+    <div class="modal-overlay" id="modal-expense-overlay">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3 id="modal-title">Adicionar Novo Gasto</h3>
+                <button class="modal-close" id="modal-expense-close">&times;</button>
+            </div>
+            <form id="form-expense">
+                <div class="modal-body">
+                    <input type="hidden" id="expense-id">
+
+                    <div class="form-group">
+                        <label for="expense-desc">Descrição</label>
+                        <input type="text" id="expense-desc" class="form-control" placeholder="Ex: Mercado mensal"
+                            required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="expense-value">Valor (R$)</label>
+                        <input type="number" id="expense-value" class="form-control" placeholder="0,00" step="0.01"
+                            min="0.01" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="expense-category">Categoria</label>
+                        <select id="expense-category" class="form-control" required>
+                            <option value="" disabled selected>Selecione uma categoria</option>
+                            <option value="Alimentação">Alimentação</option>
+                            <option value="Transporte">Transporte</option>
+                            <option value="Moradia">Moradia</option>
+                            <option value="Saúde">Saúde</option>
+                            <option value="Lazer">Lazer</option>
+                            <option value="Educação">Educação</option>
+                            <option value="Outros">Outros</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="expense-date">Data</label>
+                        <input type="date" id="expense-date" class="form-control" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" id="btn-cancel-expense">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Salvar Gasto</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="modal-confirm-overlay">
+        <div class="modal-card" style="max-width: 400px;">
+            <div class="modal-header">
+                <h3>Confirmar Exclusão</h3>
+                <button class="modal-close" id="modal-confirm-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>Você tem certeza que deseja excluir o gasto <strong id="delete-expense-title"></strong>?</p>
+                <p style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 0.5rem;">Esta ação não pode ser
+                    desfeita.</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" id="btn-confirm-cancel">Cancelar</button>
+                <button class="btn btn-danger" id="btn-confirm-delete">Excluir</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/storage.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/historico.js"></script>
+</body>
+
+</html>

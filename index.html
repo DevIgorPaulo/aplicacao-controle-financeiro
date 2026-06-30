@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - UniWallet</title>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+    <div class="app-container">
+        <aside class="sidebar">
+            <div class="sidebar-logo">
+                <i class="fas fa-wallet" style="color: var(--color-blue);"></i>
+                <span>UniWallet</span>
+            </div>
+            <ul class="sidebar-menu">
+                <li class="menu-item active">
+                    <a href="index.html">
+                        <i class="fas fa-th-large"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="historico.html">
+                        <i class="fas fa-history"></i>
+                        <span>Histórico</span>
+                    </a>
+                </li>
+            </ul>
+        </aside>
+
+        <main class="main-content">
+            <header class="top-header">
+                <div class="page-title">
+                    <h1>Dashboard</h1>
+                    <p>Veja um resumo da sua saúde financeira em tempo real</p>
+                </div>
+                <div class="header-actions">
+                    <button class="btn btn-secondary" id="btn-edit-balance">
+                        <i class="fas fa-wallet"></i> Ajustar Saldo
+                    </button>
+                    <button class="btn btn-primary" id="btn-add-expense-trigger">
+                        <i class="fas fa-plus"></i> Novo Gasto
+                    </button>
+                </div>
+            </header>
+
+            <section class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-info">
+                        <span class="stat-label">Saldo Disponível</span>
+                        <span class="stat-value" id="card-balance">R$ 0,00</span>
+                    </div>
+                    <div class="stat-icon green">
+                        <i class="fas fa-wallet"></i>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-info">
+                        <span class="stat-label">Total Gasto</span>
+                        <span class="stat-value" id="card-total-spent">R$ 0,00</span>
+                    </div>
+                    <div class="stat-icon red">
+                        <i class="fas fa-shopping-cart"></i>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-info">
+                        <span class="stat-label">Gastos Cadastrados</span>
+                        <span class="stat-value" id="card-expense-count">0</span>
+                    </div>
+                    <div class="stat-icon blue">
+                        <i class="fas fa-receipt"></i>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-info">
+                        <span class="stat-label">Maior Categoria</span>
+                        <span class="stat-value" id="card-top-category"
+                            style="font-size: 1.1rem; font-weight: 700; margin-top: 0.35rem;">Nenhuma</span>
+                    </div>
+                    <div class="stat-icon yellow">
+                        <i class="fas fa-star"></i>
+                    </div>
+                </div>
+            </section>
+
+            <div class="dashboard-grid">
+                <section class="content-block">
+                    <div class="block-header">
+                        <h2>Gastos por Categoria</h2>
+                        <div class="filter-wrapper">
+                            <select id="chart-type-selector" class="form-control"
+                                style="width: auto; padding: 0.35rem 0.75rem; font-size: 0.85rem;">
+                                <option value="doughnut">Rosca / Pizza</option>
+                                <option value="bar">Barras por Categoria</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="expenses-chart"></canvas>
+                    </div>
+                </section>
+
+                <section class="content-block">
+                    <div class="block-header">
+                        <h2>Últimos 5 Gastos</h2>
+                        <a href="historico.html"
+                            style="font-size: 0.85rem; color: var(--color-blue); text-decoration: none; font-weight: 600;">Ver
+                            todos</a>
+                    </div>
+                    <div class="recent-list" id="recent-expenses-container">
+                        <div style="text-align: center; color: var(--text-secondary); padding: 2rem 0;">
+                            Nenhum gasto cadastrado.
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <div class="modal-overlay" id="modal-expense-overlay">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3 id="modal-title">Adicionar Novo Gasto</h3>
+                <button class="modal-close" id="modal-expense-close">&times;</button>
+            </div>
+            <form id="form-expense">
+                <div class="modal-body">
+                    <input type="hidden" id="expense-id">
+
+                    <div class="form-group">
+                        <label for="expense-desc">Descrição</label>
+                        <input type="text" id="expense-desc" class="form-control" placeholder="Ex: Almoço no shopping"
+                            required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="expense-value">Valor (R$)</label>
+                        <input type="number" id="expense-value" class="form-control" placeholder="0,00" step="0.01"
+                            min="0.01" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="expense-category">Categoria</label>
+                        <select id="expense-category" class="form-control" required>
+                            <option value="" disabled selected>Selecione uma categoria</option>
+                            <option value="Alimentação">Alimentação</option>
+                            <option value="Transporte">Transporte</option>
+                            <option value="Moradia">Moradia</option>
+                            <option value="Saúde">Saúde</option>
+                            <option value="Lazer">Lazer</option>
+                            <option value="Educação">Educação</option>
+                            <option value="Outros">Outros</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="expense-date">Data</label>
+                        <input type="date" id="expense-date" class="form-control" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" id="btn-cancel-expense">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Salvar Gasto</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="modal-balance-overlay">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3>Ajustar Saldo Inicial</h3>
+                <button class="modal-close" id="modal-balance-close">&times;</button>
+            </div>
+            <form id="form-balance">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="balance-value">Novo Saldo Inicial (R$)</label>
+                        <input type="number" id="balance-value" class="form-control" placeholder="5000,00" step="0.01"
+                            min="0" required>
+                    </div>
+                    <p style="font-size: 0.8rem; color: var(--text-secondary); line-height: 1.4;">
+                        O Saldo Inicial é utilizado para calcular o Saldo Disponível subtraindo o total gasto.
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" id="btn-cancel-balance">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Atualizar Saldo</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="js/storage.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/dashboard.js"></script>
+</body>
+
+</html>
